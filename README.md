@@ -41,7 +41,7 @@ Images data are on https://ecotaxa.obs-vlfr.fr/prj/3346 and were sorted into tax
 Figure 2. Total integrated biomass. Note large differences between the two cruises as well as super low total biomass. Check metadata (in particular sample_volconc).
 
 ![](./biomass_pie.png)
-Figure 3. Pie chart of major groups -- ((something is still wrong here, Leni check))
+Figure 3. Pie chart of major groups.
 
 ![](./Chaetognatha_histogram.png)
 
