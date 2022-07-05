@@ -37,10 +37,10 @@ Using Epson V750 Pro flatbed scanner at 2400dpi, scanned "lrg" size fraction onl
 Images data are on https://ecotaxa.obs-vlfr.fr/prj/3346 and were sorted into taxonomic categories. Using the export file (.tsv; has to be downloaded locally into the forked repos; too large file size for github), individual biomass can be calculated from image area and taxonomic identity. Abundance and biomass are then aggregated to concentrations (per volume) or integrals (per area).
 
 
-![](./total_biomass_bubble.png.png)
+![](./total_biomass_bubble.png)
 Figure 2. Total integrated biomass. Note large differences between the two cruises. Check metadata (in particular sample_volconc).
 
-![](./biomass pie.png)
+![](./biomass_pie.png)
 Figure 3. Pie chart of major groups -- ((something is still wrong here, Leni check))
 
 ![](./biomass pie.png)
