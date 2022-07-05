@@ -26,8 +26,8 @@ the water volume that passed through the net bags during deployment. The net bag
 with filtered seawater (20 μm) before the first deployment and were again rinsed after each
 further deployment to wash the retained material into the collectors that were at the end of the
 net bags. At each station the bongo net was deployed three times to sample in 10 m, 100 m and
-300 m depth for 30 minutes at 2 knots ship speed (Table 5.4-1). We lowered the bongo net with
-0.7 m/s and hoisted it with 0.5 m/s rope speed. After each deployment the ship returned to its
+300 m depth for 30 minutes at 2 knots ship speed. The bongo net was lowered with
+0.7 m/s and hoisted with 0.5 m/s rope speed. After each deployment the ship returned to its
 initial position.
 
 ### Scanning procedure
@@ -38,10 +38,11 @@ Images data are on https://ecotaxa.obs-vlfr.fr/prj/3346 and were sorted into tax
 
 
 ![](./total_biomass_bubble.png)
-Figure 2. Total integrated biomass. Note large differences between the two cruises. Check metadata (in particular sample_volconc).
+Figure 2. Total integrated biomass. Note large differences between the two cruises as well as super low total biomass. Check metadata (in particular sample_volconc).
 
 ![](./biomass_pie.png)
 Figure 3. Pie chart of major groups -- ((something is still wrong here, Leni check))
 
 ![](./Chaetognatha_histogram.png)
+
 Figure 4. Example of a size distribution of a taxonomic group -- here chaetognaths.
