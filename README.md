@@ -1,6 +1,10 @@
 # POS536
-## Code used for data analysis of zooplankton data collected on POS536 and SO279
+
+## Data analysis of zooplankton data collected on POS536 and SO279
+
 ### Cruise summary
+The expedition POS 536 is part of a multi-disciplinary research initiative of GEOMAR
+investigating the origin, transport and fate of plastic debris from estuaries to the oceanic garbage patches. The main focus will be on the vertical transfer of plastic debris from the surface and near-surface waters to the deep sea and on the processes that mediate this transport. The obtained data will help to develop quantitative models that provide information about the level of plastic pollution in the different compartments of the open ocean (surface, water column, seafloor).
 
 Cruise track POS536 available on ???
 Cruise track SO579 available on https://doi.pangaea.de/10.1594/PANGAEA.933671
