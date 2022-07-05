@@ -43,5 +43,5 @@ Figure 2. Total integrated biomass. Note large differences between the two cruis
 ![](./biomass_pie.png)
 Figure 3. Pie chart of major groups -- ((something is still wrong here, Leni check))
 
-![](./biomass pie.png)
-Figure 3. Pie chart of major groups -- ((something is still wrong here, Leni check))
+![](./Chaetognatha_histogram.png)
+Figure 4. Example of a size distribution of a taxonomic group -- here chaetognaths.
