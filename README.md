@@ -13,7 +13,7 @@ Hydrography (TSG) SO579 available on https://doi.pangaea.de/10.1594/PANGAEA.9379
 Cruise report POS536 available on https://oceanrep.geomar.de/id/eprint/50735/
 
 
-![](./figures/sample_map_ecotaxa.png)
+![](./sample_map_ecotaxa.png)
 
 Fig. 1: Overview of stations sampled during both cruises (from Ecotaxa).
 
@@ -37,11 +37,11 @@ Using Epson V750 Pro flatbed scanner at 2400dpi, scanned "lrg" size fraction onl
 Images data are on https://ecotaxa.obs-vlfr.fr/prj/3346 and were sorted into taxonomic categories. Using the export file (.tsv; has to be downloaded locally into the forked repos; too large file size for github), individual biomass can be calculated from image area and taxonomic identity. Abundance and biomass are then aggregated to concentrations (per volume) or integrals (per area).
 
 
-![](./figures/total_biomass_bubble.png.png)
+![](./total_biomass_bubble.png.png)
 Figure 2. Total integrated biomass. Note large differences between the two cruises. Check metadata (in particular sample_volconc).
 
-![](./figures/biomass pie.png)
+![](./biomass pie.png)
 Figure 3. Pie chart of major groups -- ((something is still wrong here, Leni check))
 
-![](./figures/biomass pie.png)
+![](./biomass pie.png)
 Figure 3. Pie chart of major groups -- ((something is still wrong here, Leni check))
