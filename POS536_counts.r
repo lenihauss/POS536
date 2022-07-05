@@ -14,7 +14,7 @@ library(mapdata)
 library(scatterpie)
 
 ## set working directory -- change this to where you saved your .tsv data
-setwd("V:/Daten/Cruises/POS536")  
+setwd("V:/Daten/Cruises/POS536_SO")  
 
 ## list all ecotaxa in a folder
 file_list <- list.files(pattern="*.tsv") # create list of all .tsv files in that folder
@@ -40,7 +40,7 @@ data$time <- format(strptime(data$time, format="%H%M%S"), format = "%H:%M")
 
 metadata<- data %>% 
   distinct(sample_id, lat, lon, date, time, depth_min, depth_max,sample_volconc, .keep_all = F)
-#seems lat is missing for 2019_pos536_bongo12l_lrg and volumes seem super parge...check!!!
+#seems lat is missing for 2019_pos536_bongo12l_lrg and volumes seem super large...check!!!
 
 ##calculate image area from pixels (pixel size = 10.6µm)
 data$area_mm2 <- data$area*0.00011236
@@ -99,6 +99,8 @@ biomass$krill_fraction = biomass$Euphausiacea/biomass$total_biomass_ug_m3
 biomass$chaetognath_fraction = biomass$Chaetognatha/biomass$total_biomass_ug_m3
 biomass$other_fraction = 1 - biomass$calanoid_fraction - biomass$chaetognath_fraction - biomass$krill_fraction
 fractions <-biomass[c("sample_id","lat", "lon", "total_biomass_ug_m3", "calanoid_fraction", "krill_fraction","chaetognath_fraction", "other_fraction")]
+write.table(fractions, file = "POS536_fractions.txt")
+
 ################plot on map
 ###load coastline data for Europe, using the map_data function
 Area <- map_data("world")
@@ -108,7 +110,7 @@ Area <- map_data("world")
 ggplot() +
   theme_bw()+
   geom_polygon(fill="darkgoldenrod1", color = "black", data = Area, aes(x=long, y = lat, group = group)) + ##this adds the coastlines
-  geom_point(data = biomass, aes(x = lon, y = lat, size = total_biomass_ug_m3), color = "red", alpha=0.7) +
+  geom_point(data = fractions, aes(x = lon, y = lat, size = total_biomass_ug_m3), color = "red", alpha=0.7) +
   coord_quickmap(xlim=c(-40,-4), ylim=c(25,50))  + ##map boundaries
   labs(title = "Total Biomass",x = "Longitude °W", y = "Latitude °N", size = "ug / m²")                                         ##axis labels
 
@@ -119,12 +121,11 @@ ggsave("V:/Daten/Cruises/POS536/total_biomass_bubble.png", width = 7, height = 5
 ggplot() +
   theme_bw()+
   geom_polygon(fill="darkgoldenrod1", color = "black", data = Area, aes(x=long, y = lat, group = group)) +  ## coastlines                                                       ##map boundaries
-  labs(title = "POS536",x = "Longitude °W", y = "Latitude °N", size = "Biomass (mg / m²)")  +                          ##axis labels
-  geom_point(data = biomass, aes(x = lon, y = lat, size = total_biomass_ug_m3), pch=21, fill = "transparent", color= "black") +
-  geom_scatterpie(aes(x=lon, y=lat, group = sample_id, r = ((total_biomass_ug_m3/3.14)^0.5)), 
+  labs(title = "POS536 & SO579",x = "Longitude °W", y = "Latitude °N", size = "Biomass (mg / m²)")  +                          ##axis labels
+  #geom_point(data = fractions, aes(x = lon, y = lat, size = total_biomass_ug_m3), pch=21, fill = "transparent", color= "black") +
+  geom_scatterpie(aes(x=lon, y=lat, group = sample_id, r = total_biomass_ug_m3/100), 
                   data = fractions, cols = colnames(fractions[,c(5:8)])) +
-  scale_fill_manual(name="Group",
-                    labels=c("Copepoda","Krill","Chaetognatha", "other"), values=c("green1","coral1","darkslateblue", "yellow")) +
   coord_fixed(xlim=c(-40,-4), ylim=c(25,50))
-
+#(name="Group",
+                 # labels=c("Calanoida","Krill","Chaetognatha", "other"), values=c("green1","coral1","darkslateblue", "yellow")) +
 ggsave("V:/Daten/Cruises/POS536/biomass_pie.png", width = 7, height = 5, bg = "transparent")
