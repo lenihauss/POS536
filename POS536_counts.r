@@ -37,7 +37,7 @@ data$date <- as.Date(as.character(data$date), format =  "%Y%m%d")
 ##time format
 data$time <- sprintf("%06d", data$time)
 data$time <- format(strptime(data$time, format="%H%M%S"), format = "%H:%M")
-
+data$sample_volconc <- data$sample_volconc/1000 # to get to m3
 metadata<- data %>% 
   distinct(sample_id, lat, lon, date, time, depth_min, depth_max,sample_volconc, .keep_all = F)
 #seems lat is missing for 2019_pos536_bongo12l_lrg and volumes seem super large...check!!!
@@ -45,17 +45,17 @@ metadata<- data %>%
 ##calculate image area from pixels (pixel size = 10.6µm)
 data$area_mm2 <- data$area*0.00011236
 
-##convert area to biomass for different taxa -- these relationships are from Lehette & Hernandez-leon and
+##convert area to biomass for different taxa -- these relationships are from Lehette & Hernandez-Leon 2006 and
 data$biomass_ug <- with(data, 
                         ifelse(grepl("Calanoida", annotation_hierarchy),45.25*data$area_mm2^1.59,
                                ifelse(grepl("Annelida", annotation_hierarchy),43.38*data $area_mm2^1.54,
                                       ifelse(grepl("Chaetognatha", annotation_hierarchy),23.45*data $area_mm2^1.19,
                                              ifelse(grepl("Gastropoda", annotation_hierarchy),43.38*data $area_mm2^1.54,
                                                     44.78*data$area_mm2^1.56)))))
-
+#from here, it is aggregation
 #total abundance
 samples_abund <- aggregate(biomass_ug ~ (sample_id+sample_volconc), data, length)
-samples_abund$total_abundance_m3 <- samples_abund$spec_id/samples_abund$sample_volconc
+samples_abund$total_abundance_m3 <- samples_abund$biomass_ug/samples_abund$sample_volconc
 samples_abund <-samples_abund[c("sample_id","total_abundance_m3")]
 #same for individual taxonomic categories
 species_abund <- aggregate(biomass_ug ~ (spec_id+sample_id + sample_volconc), data, length)
@@ -84,14 +84,23 @@ biomass <- Reduce(function(dtf1, dtf2) merge(dtf1, dtf2, by = "sample_id", all.x
                     list(metadata, samples_biomass, species_biomass))
 #replace NAs with zeros
 biomass[is.na(biomass)] <- 0
-
+#remove intermediate dataframes
 rm(data, samples_biomass, species_biomass, species_abund, samples_abund)
 ##export summary data in case this shall be published (e.g. on Pangaea)
 write.table(biomass, file = "POS536_biomass.txt")
 write.table(abundance, file = "POS536_abundance.txt")
 
+##calculate fraction from total abundance for calanoids, chaetognaths, krill and others
+abundance$calanoid_fraction = abundance$Calanoida/abundance$total_abundance_m3
+abundance$harpacticoid_fraction = abundance$Harpacticoida/abundance$total_abundance_m3
+abundance$salp_fraction = abundance$Thaliacea/abundance$total_abundance_m3
+abundance$fish_fraction = abundance$Actinopterygii/abundance$total_abundance_m3
+abundance$krill_fraction = abundance$Euphausiacea/abundance$total_abundance_m3
+abundance$chaetognath_fraction = abundance$Chaetognatha/abundance$total_abundance_m3
+abundance$other_fraction = 1 - abundance$calanoid_fraction - abundance$chaetognath_fraction - abundance$krill_fraction - abundance$fish_fraction - abundance$salp_fraction  - abundance$harpacticoid_fraction
+fractions <-abundance[c("sample_id","lat", "lon", "total_abundance_m3", "calanoid_fraction", "krill_fraction","chaetognath_fraction", "fish_fraction", "salp_fraction", "harpacticoid_fraction", "other_fraction")]
+write.table(fractions, file = "POS536_abundance_fractions.txt")
 
-#calculate integrated biomass in mg per m2
 
 ##calculate fraction from total biomass for calanoids, chaetognaths, krill and others
 biomass$calanoid_fraction = biomass$Calanoida/biomass$total_biomass_ug_m3
@@ -110,11 +119,11 @@ Area <- map_data("world")
 ggplot() +
   theme_bw()+
   geom_polygon(fill="darkgoldenrod1", color = "black", data = Area, aes(x=long, y = lat, group = group)) + ##this adds the coastlines
-  geom_point(data = fractions, aes(x = lon, y = lat, size = total_biomass_ug_m3), color = "red", alpha=0.7) +
+  geom_point(data = biomass, aes(x = lon, y = lat, size = total_biomass_ug_m3), color = "red", alpha=0.7) +
   coord_quickmap(xlim=c(-40,-4), ylim=c(25,50))  + ##map boundaries
-  labs(title = "Total Biomass",x = "Longitude °W", y = "Latitude °N", size = "ug / m²")                                         ##axis labels
+  labs(title = "Total Biomass",x = "Longitude °W", y = "Latitude °N", size = "ug / m3")                                         ##axis labels
 
-ggsave("V:/Daten/Cruises/POS536/total_biomass_bubble.png", width = 7, height = 5, bg = "transparent")
+ggsave("V:/Daten/Cruises/POS536_SO/total_biomass_bubble.png", width = 7, height = 5, bg = "transparent")
 
 #plot map with piecharts to show fraction of different groups
 #something is still wrong here, check...
@@ -123,9 +132,9 @@ ggplot() +
   geom_polygon(fill="darkgoldenrod1", color = "black", data = Area, aes(x=long, y = lat, group = group)) +  ## coastlines                                                       ##map boundaries
   labs(title = "POS536 & SO579",x = "Longitude °W", y = "Latitude °N", size = "Biomass (mg / m²)")  +                          ##axis labels
   #geom_point(data = fractions, aes(x = lon, y = lat, size = total_biomass_ug_m3), pch=21, fill = "transparent", color= "black") +
-  geom_scatterpie(aes(x=lon, y=lat, group = sample_id, r = total_biomass_ug_m3/100), 
-                  data = fractions, cols = colnames(fractions[,c(5:8)])) +
+  geom_scatterpie(aes(x=lon, y=lat, group = sample_id, r = 3), 
+                  data = fractions, cols = colnames(fractions[,c(5:11)])) +
+  #scale_fill_maname="Group",labels=c("Calanoida","Krill","Chaetognatha", "Fish", "Salp", "Harpacticoid", "other"), values=c("green1","coral1","darkslateblue", "yellow")) +
   coord_fixed(xlim=c(-40,-4), ylim=c(25,50))
-#(name="Group",
-                 # labels=c("Calanoida","Krill","Chaetognatha", "other"), values=c("green1","coral1","darkslateblue", "yellow")) +
-ggsave("V:/Daten/Cruises/POS536/biomass_pie.png", width = 7, height = 5, bg = "transparent")
+
+ggsave("V:/Daten/Cruises/POS536_SO/biomass_pie.png", width = 7, height = 5, bg = "transparent")
