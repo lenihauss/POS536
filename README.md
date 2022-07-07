@@ -31,7 +31,7 @@ net bags. At each station the bongo net was deployed three times to sample in 10
 initial position.
 
 ### Scanning procedure
-Using Epson V750 Pro flatbed scanner at 2400dpi, scanned "lrg" size fraction only (>1000µm), scanned entire sample. Processed using ZooProcess.
+Using Epson V750 Pro flatbed scanner at 2400dpi, scanned "lrg" size fraction only (>1000µm), either the entire sample or split (1/4 or 1/8). Processed using ZooProcess.
 
 ### Image Analysis
 Images data are on https://ecotaxa.obs-vlfr.fr/prj/3346 and were sorted into taxonomic categories. Using the export file (.tsv; has to be downloaded locally into the forked repos; too large file size for github), individual biomass can be calculated from image area and taxonomic identity. Abundance and biomass are then aggregated to concentrations (per volume) or integrals (per area).
