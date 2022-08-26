@@ -1,0 +1,47 @@
+2022-08-26 14:08:56,822:API_operations.exports.ForProject:INFO Input Param = {'project_id': 3346, 'exp_type': <ExportTypeEnum.general_tsv: 'TSV'>, 'use_latin1': False, 'tsv_entities': 'OPAS', 'split_by': '', 'coma_as_separator': False, 'format_dates_times': False, 'with_images': False, 'with_internal_ids': False, 'only_first_image': False, 'sum_subtotal': '', 'out_to_ftp': False}
+2022-08-26 14:08:56,837:API_operations.exports.ForProject:INFO Execute SQL : select obh.orig_id AS object_id, obh.latitude AS object_lat, obh.longitude AS object_lon,
+                         TO_CHAR(obh.objdate,'YYYYMMDD') AS object_date,
+                         TO_CHAR(obh.objtime,'HH24MISS') AS object_time,
+                         obh.object_link, obh.depth_min AS object_depth_min, obh.depth_max AS object_depth_max,
+                         CASE obh.classif_qual 
+                            WHEN 'V' then 'validated' 
+                            WHEN 'P' then 'predicted' 
+                            WHEN 'D' then 'dubious' 
+                            ELSE obh.classif_qual 
+                         END AS object_annotation_status,                
+                         usr.name AS object_annotation_person_name, usr.email AS object_annotation_person_email,
+                         TO_CHAR(obh.classif_when,'YYYYMMDD') AS object_annotation_date,
+                         TO_CHAR(obh.classif_when,'HH24MISS') AS object_annotation_time,                
+                         txo.display_name AS object_annotation_category 
+                    ,(WITH RECURSIVE rq(id, name, parent_id) 
+                   AS (SELECT id, name, parent_id, 1 AS rank 
+                         FROM taxonomy 
+                        WHERE id = obh.classif_id
+                       UNION
+                       SELECT txpr.id, txpr.name, txpr.parent_id, rank+1 AS rank 
+                         FROM rq 
+                         JOIN taxonomy txpr ON txpr.id = rq.parent_id)
+                    SELECT string_agg(name,'>') 
+                      FROM (SELECT name 
+                              FROM rq 
+                          ORDER BY rank desc) q) AS object_annotation_hierarchy
+ , obf.n01 AS "object_imageindex", obf.n02 AS "object_area", obf.n03 AS "object_meanimagegrey", obf.n04 AS "object_mean", obf.n05 AS "object_stddev", obf.n06 AS "object_mode", obf.n07 AS "object_min", obf.n08 AS "object_max", obf.n09 AS "object_x", obf.n10 AS "object_y", obf.n11 AS "object_xm", obf.n12 AS "object_ym", obf.n13 AS "object_perim.", obf.n14 AS "object_bx", obf.n15 AS "object_by", obf.n16 AS "object_width", obf.n17 AS "object_height", obf.n18 AS "object_major", obf.n19 AS "object_minor", obf.n20 AS "object_angle", obf.n21 AS "object_circ.", obf.n22 AS "object_feret", obf.n23 AS "object_intden", obf.n24 AS "object_median", obf.n25 AS "object_skew", obf.n26 AS "object_kurt", obf.n27 AS "object_%area", obf.n28 AS "object_xstart", obf.n29 AS "object_ystart", obf.n30 AS "object_area_exc", obf.n31 AS "object_fractal", obf.n32 AS "object_skelarea", obf.n33 AS "object_slope", obf.n34 AS "object_histcum1", obf.n35 AS "object_histcum2", obf.n36 AS "object_histcum3", obf.n37 AS "object_xmg5", obf.n38 AS "object_ymg5", obf.n39 AS "object_nb1", obf.n40 AS "object_nb2", obf.n41 AS "object_nb3", obf.n42 AS "object_compentropy", obf.n43 AS "object_compmean", obf.n44 AS "object_compslope", obf.n45 AS "object_compm1", obf.n46 AS "object_compm2", obf.n47 AS "object_compm3", obf.n48 AS "object_symetrieh", obf.n49 AS "object_symetriev", obf.n50 AS "object_symetriehc", obf.n51 AS "object_symetrievc", obf.n52 AS "object_convperim", obf.n53 AS "object_convarea", obf.n54 AS "object_fcons", obf.n55 AS "object_thickr", obf.n56 AS "object_tag", obf.n57 AS "object_esd", obf.n58 AS "object_elongation", obf.n59 AS "object_range", obf.n60 AS "object_meanpos", obf.n61 AS "object_centroids", obf.n62 AS "object_cv", obf.n63 AS "object_sr", obf.n64 AS "object_perimareaexc", obf.n65 AS "object_feretareaexc", obf.n66 AS "object_perimferet", obf.n67 AS "object_perimmajor", obf.n68 AS "object_circex", obf.n69 AS "object_cdexc", obf.n70 AS "object_kurt_mean", obf.n71 AS "object_skew_mean", obf.n72 AS "object_convperim_perim", obf.n73 AS "object_convarea_area", obf.n74 AS "object_symetrieh_area", obf.n75 AS "object_symetriev_area", obf.n76 AS "object_nb1_area", obf.n77 AS "object_nb2_area", obf.n78 AS "object_nb3_area", obf.n79 AS "object_nb1_range", obf.n80 AS "object_nb2_range", obf.n81 AS "object_nb3_range", obf.n82 AS "object_median_mean", obf.n83 AS "object_median_mean_range", obf.n84 AS "object_skeleton_area"
+, sam.orig_id AS sample_id, sam.dataportal_descriptor AS sample_dataportal_descriptor , sam.t01 AS "sample_project", sam.t02 AS "sample_ship", sam.t03 AS "sample_filename", sam.t04 AS "sample_samplinggear", sam.t05 AS "sample_volconc", sam.t06 AS "sample_comment"
+, prc.orig_id AS process_id , prc.t01 AS "process_software", prc.t02 AS "process_start_date", prc.t03 AS "process_start_time", prc.t04 AS "process_analysed_color_channel", prc.t05 AS "process_background_method", prc.t06 AS "process_nb_images", prc.t07 AS "process_rolling", prc.t08 AS "process_pixel", prc.t09 AS "process_upper", prc.t10 AS "process_gamma_value", prc.t11 AS "process_vignette_color", prc.t12 AS "process_esd_min", prc.t13 AS "process_esd_max", prc.t14 AS "process_lut_offset", prc.t15 AS "process_lut_slope", prc.t16 AS "process_remove_objects_on_sides", prc.t17 AS "process_stop_n_images", prc.t18 AS "process_scale", prc.t19 AS "process_stop_after_m_objects", prc.t20 AS "process_nb_of_rawfile_images_in_folder", prc.t21 AS "process_grey_auto_adjust"
+, acq.orig_id AS acq_id, acq.instrument AS acq_instrument , acq.t01 AS "acq_cell_type", acq.t02 AS "acq_magnification" FROM obj_head obh
+  JOIN acquisitions acq ON acq.acquisid = obh.acquisid
+  JOIN samples sam ON sam.sampleid = acq.acq_sample_id AND sam.projid = :projid
+  JOIN process prc ON prc.processid = acq.acquisid
+  JOIN obj_field obf ON obf.objfid = obh.objid
+ LEFT JOIN taxonomy txo ON txo.id = obh.classif_id
+ LEFT JOIN users usr ON obh.classif_who = usr.id 
+ORDER BY sam.orig_id ASC, obh.objid ASC
+2022-08-26 14:08:56,837:API_operations.exports.ForProject:INFO Params : {'projid': 3346}
+2022-08-26 14:08:59,766:API_operations.exports.ForProject:INFO Writing into file /home/ecotaxa/ecotaxa/temptask/task059531/data.tsv
+2022-08-26 14:09:01,610:API_operations.exports.ForProject:INFO Row 10000 of max 43478
+2022-08-26 14:09:03,456:API_operations.exports.ForProject:INFO Row 20000 of max 43478
+2022-08-26 14:09:05,356:API_operations.exports.ForProject:INFO Row 30000 of max 43478
+2022-08-26 14:09:07,198:API_operations.exports.ForProject:INFO Row 40000 of max 43478
+2022-08-26 14:09:07,895:API_operations.exports.ForProject:INFO Storing into zip as ecotaxa_export_3346_20220826_1408.tsv
+2022-08-26 14:09:09,726:API_operations.exports.ForProject:INFO Extracted 43478 rows
+2022-08-26 14:09:09,727:API_operations.exports.ForProject:INFO Log in zip should end here.
